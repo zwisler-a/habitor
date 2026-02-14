@@ -54,6 +54,42 @@ describe('UserContextService (integration)', () => {
     expect(persisted).not.toBeNull();
   });
 
+  it('handles concurrent default-user resolution without duplicate writes', async () => {
+    const resolved = await Promise.all(
+      Array.from({ length: 8 }, () =>
+        userContextService.resolveUserFromHeader(),
+      ),
+    );
+
+    for (const user of resolved) {
+      expect(user.id).toBe('local-default-user');
+      expect(user.is_default).toBe(true);
+    }
+
+    const defaultUsers: UserEntity[] = await dataSource
+      .getRepository(UserEntity)
+      .findBy({ id: 'local-default-user' });
+    expect(defaultUsers.length).toBe(1);
+  });
+
+  it('handles concurrent auto-create for the same X-User-Id', async () => {
+    const resolved = await Promise.all(
+      Array.from({ length: 8 }, () =>
+        userContextService.resolveUserFromHeader('sam'),
+      ),
+    );
+
+    for (const user of resolved) {
+      expect(user.id).toBe('sam');
+      expect(user.is_default).toBe(false);
+    }
+
+    const users: UserEntity[] = await dataSource
+      .getRepository(UserEntity)
+      .findBy({ id: 'sam' });
+    expect(users.length).toBe(1);
+  });
+
   it('rejects blank X-User-Id values', async () => {
     let caughtError: unknown;
     try {

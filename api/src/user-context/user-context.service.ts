@@ -28,37 +28,29 @@ export class UserContextService {
     }
 
     const users = this.dataSource.getRepository(UserEntity);
-    const existing = await users.findOneBy({ id: userId });
-    if (existing) {
-      return existing;
-    }
+    await users.upsert(
+      {
+        id: userId,
+        name: `User ${userId}`,
+        is_default: false,
+      },
+      ['id'],
+    );
 
-    const created = users.create({
-      id: userId,
-      name: `User ${userId}`,
-      is_default: false,
-    });
-
-    return users.save(created);
+    return users.findOneByOrFail({ id: userId });
   }
 
   private async resolveDefaultUser(): Promise<UserEntity> {
     const users = this.dataSource.getRepository(UserEntity);
-    const existingDefault = await users.findOne({
-      where: { is_default: true },
-      order: { created_at: 'ASC' },
-    });
+    await users.upsert(
+      {
+        id: DEFAULT_USER_ID,
+        name: DEFAULT_USER_NAME,
+        is_default: true,
+      },
+      ['id'],
+    );
 
-    if (existingDefault) {
-      return existingDefault;
-    }
-
-    const createdDefault = users.create({
-      id: DEFAULT_USER_ID,
-      name: DEFAULT_USER_NAME,
-      is_default: true,
-    });
-
-    return users.save(createdDefault);
+    return users.findOneByOrFail({ id: DEFAULT_USER_ID });
   }
 }
