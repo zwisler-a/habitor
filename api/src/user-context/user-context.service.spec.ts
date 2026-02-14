@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../database/entities/user.entity';
+import { DEFAULT_USER_ID } from './user-context.constants';
 import { UserContextService } from './user-context.service';
 
 describe('UserContextService (integration)', () => {
@@ -35,7 +36,7 @@ describe('UserContextService (integration)', () => {
   it('uses a default user when X-User-Id is missing', async () => {
     const user = await userContextService.resolveUserFromHeader();
 
-    expect(user.id).toBe('local-default-user');
+    expect(user.id).toBe(DEFAULT_USER_ID);
     expect(user.is_default).toBe(true);
 
     const users = await dataSource.getRepository(UserEntity).find();
@@ -62,13 +63,13 @@ describe('UserContextService (integration)', () => {
     );
 
     for (const user of resolved) {
-      expect(user.id).toBe('local-default-user');
+      expect(user.id).toBe(DEFAULT_USER_ID);
       expect(user.is_default).toBe(true);
     }
 
     const defaultUsers: UserEntity[] = await dataSource
       .getRepository(UserEntity)
-      .findBy({ id: 'local-default-user' });
+      .findBy({ id: DEFAULT_USER_ID });
     expect(defaultUsers.length).toBe(1);
   });
 

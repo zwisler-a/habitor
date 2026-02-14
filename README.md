@@ -19,6 +19,7 @@ This repository uses npm workspaces with:
 - `npm run build` to build shared types, API, and web app
 - `npm run db:migrate --workspace api` to run SQLite migrations
 - `npm run db:revert --workspace api` to revert the latest SQLite migration
+- `npm run db:seed --workspace api` to apply starter core seed data
 
 ### Environment
 
