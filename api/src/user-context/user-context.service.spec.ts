@@ -100,4 +100,15 @@ describe('UserContextService (integration)', () => {
 
     expect(caughtError).toBeInstanceOf(BadRequestException);
   });
+
+  it('rejects X-User-Id values longer than 128 characters', async () => {
+    let caughtError: unknown;
+    try {
+      await userContextService.resolveUserFromHeader('x'.repeat(129));
+    } catch (error: unknown) {
+      caughtError = error;
+    }
+
+    expect(caughtError).toBeInstanceOf(BadRequestException);
+  });
 });
