@@ -17,11 +17,11 @@ describe('loadAppConfig', () => {
     expect(() =>
       loadAppConfig({
         NODE_ENV: 'local',
-        PORT: '99999',
+        PORT: '3000abc',
         SQLITE_PATH: ' ',
       }),
     ).toThrow(
-      'Environment validation failed:\n- NODE_ENV must be one of: development, test, production. Received: local\n- PORT must be an integer between 1 and 65535. Received: 99999\n- SQLITE_PATH is required.',
+      'Environment validation failed:\n- NODE_ENV must be one of: development, test, production. Received: local\n- PORT must be an integer between 1 and 65535. Received: 3000abc\n- SQLITE_PATH is required.',
     );
   });
 });

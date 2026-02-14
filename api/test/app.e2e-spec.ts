@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication;
 
   beforeEach(async () => {
+    process.env.SQLITE_PATH = ':memory:';
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -17,9 +18,15 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer())
+    return request(app.getHttpAdapter().getInstance())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect(({ body }) => {
+        expect(body).toEqual({
+          status: 'ok',
+          service: 'habitor-api',
+          timestamp: expect.any(String),
+        });
+      });
   });
 });

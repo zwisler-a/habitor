@@ -42,9 +42,16 @@ function parseNodeEnv(value: string, errors: string[]): NodeEnv {
 
 function parsePort(value: string | undefined, errors: string[]): number {
   const resolved = value ?? '3000';
-  const parsed = Number.parseInt(resolved, 10);
+  const trimmed = resolved.trim();
 
-  if (!Number.isFinite(parsed) || Number.isNaN(parsed) || parsed <= 0 || parsed > 65535) {
+  if (!/^\d+$/.test(trimmed)) {
+    errors.push(`PORT must be an integer between 1 and 65535. Received: ${resolved}`);
+    return 3000;
+  }
+
+  const parsed = Number(trimmed);
+
+  if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 65535) {
     errors.push(`PORT must be an integer between 1 and 65535. Received: ${resolved}`);
     return 3000;
   }
