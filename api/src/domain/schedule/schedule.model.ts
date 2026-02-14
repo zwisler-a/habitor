@@ -91,10 +91,7 @@ export function normalizeSchedule(config: ScheduleConfig): ScheduleConfig {
   };
 }
 
-export function isDayScheduled(
-  config: ScheduleConfig,
-  day: Weekday,
-): boolean {
+export function isDayScheduled(config: ScheduleConfig, day: Weekday): boolean {
   const normalized = normalizeSchedule(config);
 
   if (normalized.kind === 'daily') {
