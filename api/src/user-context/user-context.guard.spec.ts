@@ -6,7 +6,7 @@ import { SKIP_USER_CONTEXT_KEY } from './skip-user-context.decorator';
 import type { UserContextService } from './user-context.service';
 
 function createExecutionContext(
-  request: { headers: Record<string, string>; user?: UserEntity },
+  request: { headers: Record<string, string | string[]>; user?: UserEntity },
   handler: () => void,
   klass: new () => unknown,
 ): ExecutionContext {
@@ -36,7 +36,10 @@ describe('UserContextGuard', () => {
     );
     const handler = () => undefined;
     class TestClass {}
-    const request: { headers: Record<string, string>; user?: UserEntity } = {
+    const request: {
+      headers: Record<string, string | string[]>;
+      user?: UserEntity;
+    } = {
       headers: {},
     };
     const context = createExecutionContext(request, handler, TestClass);
@@ -64,8 +67,41 @@ describe('UserContextGuard', () => {
     );
     const handler = () => undefined;
     class TestClass {}
-    const request: { headers: Record<string, string>; user?: UserEntity } = {
+    const request: {
+      headers: Record<string, string | string[]>;
+      user?: UserEntity;
+    } = {
       headers: { 'x-user-id': 'alex' },
+    };
+    const context = createExecutionContext(request, handler, TestClass);
+
+    const allowed = await guard.canActivate(context);
+    expect(allowed).toBe(true);
+    expect(userContextService.resolveUserFromHeader).toHaveBeenCalledWith(
+      'alex',
+    );
+    expect(request.user).toBe(resolvedUser);
+  });
+
+  it('uses the first header value when x-user-id is provided as an array', async () => {
+    const reflector = new Reflector();
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(undefined);
+    const resolvedUser = { id: 'alex' } as UserEntity;
+    const userContextService = {
+      resolveUserFromHeader: jest.fn().mockResolvedValue(resolvedUser),
+    } as Pick<UserContextService, 'resolveUserFromHeader'>;
+
+    const guard = new UserContextGuard(
+      reflector,
+      userContextService as UserContextService,
+    );
+    const handler = () => undefined;
+    class TestClass {}
+    const request: {
+      headers: Record<string, string | string[]>;
+      user?: UserEntity;
+    } = {
+      headers: { 'x-user-id': ['alex', 'ignored'] },
     };
     const context = createExecutionContext(request, handler, TestClass);
 
