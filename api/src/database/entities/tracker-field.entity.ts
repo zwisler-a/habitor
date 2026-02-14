@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import type { PrimitiveType } from '../../domain/primitives/primitive-field.model';
 
 @Entity({ name: 'tracker_fields' })
 export class TrackerFieldEntity {
@@ -12,7 +13,7 @@ export class TrackerFieldEntity {
   field_key!: string;
 
   @Column({ type: 'text' })
-  primitive_type!: string;
+  primitive_type!: PrimitiveType;
 
   @Column({ type: 'text', nullable: true })
   unit!: string | null;
