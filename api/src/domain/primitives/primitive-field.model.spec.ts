@@ -17,7 +17,9 @@ describe('primitive-field.model', () => {
     });
 
     it('rejects unknown primitive types', () => {
-      expect(() => parsePrimitiveType('json')).toThrow('Unsupported primitive type: json');
+      expect(() => parsePrimitiveType('json')).toThrow(
+        'Unsupported primitive type: json',
+      );
     });
   });
 
@@ -119,7 +121,9 @@ describe('primitive-field.model', () => {
           value_duration_sec: null,
           value_text: null,
         }),
-      ).toThrow('Field "score" of type "number" cannot use column "value_bool".');
+      ).toThrow(
+        'Field "score" of type "number" cannot use column "value_bool".',
+      );
     });
   });
 });

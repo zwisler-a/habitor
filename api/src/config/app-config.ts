@@ -36,7 +36,9 @@ function parseNodeEnv(value: string, errors: string[]): NodeEnv {
     return value as NodeEnv;
   }
 
-  errors.push(`NODE_ENV must be one of: ${VALID_NODE_ENVS.join(', ')}. Received: ${value}`);
+  errors.push(
+    `NODE_ENV must be one of: ${VALID_NODE_ENVS.join(', ')}. Received: ${value}`,
+  );
   return 'development';
 }
 
@@ -45,21 +47,29 @@ function parsePort(value: string | undefined, errors: string[]): number {
   const trimmed = resolved.trim();
 
   if (!/^\d+$/.test(trimmed)) {
-    errors.push(`PORT must be an integer between 1 and 65535. Received: ${resolved}`);
+    errors.push(
+      `PORT must be an integer between 1 and 65535. Received: ${resolved}`,
+    );
     return 3000;
   }
 
   const parsed = Number(trimmed);
 
   if (!Number.isInteger(parsed) || parsed <= 0 || parsed > 65535) {
-    errors.push(`PORT must be an integer between 1 and 65535. Received: ${resolved}`);
+    errors.push(
+      `PORT must be an integer between 1 and 65535. Received: ${resolved}`,
+    );
     return 3000;
   }
 
   return parsed;
 }
 
-function parseRequired(name: string, value: string | undefined, errors: string[]): string {
+function parseRequired(
+  name: string,
+  value: string | undefined,
+  errors: string[],
+): string {
   const resolved = value?.trim();
 
   if (!resolved) {

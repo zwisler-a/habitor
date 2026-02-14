@@ -1,4 +1,9 @@
-export const primitiveTypes = ['boolean', 'number', 'duration', 'text'] as const;
+export const primitiveTypes = [
+  'boolean',
+  'number',
+  'duration',
+  'text',
+] as const;
 
 export type PrimitiveType = (typeof primitiveTypes)[number];
 
@@ -38,7 +43,9 @@ export function parsePrimitiveType(rawPrimitiveType: string): PrimitiveType {
   throw new Error(`Unsupported primitive type: ${rawPrimitiveType}`);
 }
 
-export function validatePrimitiveFieldDefinition(field: PrimitiveFieldDefinition): void {
+export function validatePrimitiveFieldDefinition(
+  field: PrimitiveFieldDefinition,
+): void {
   if (!field.fieldKey.trim()) {
     throw new Error('fieldKey is required.');
   }
@@ -77,7 +84,9 @@ export function validatePrimitiveFieldDefinition(field: PrimitiveFieldDefinition
       validation.maxLength !== undefined &&
       validation.minLength > validation.maxLength
     ) {
-      throw new Error('validation.minLength cannot be greater than validation.maxLength.');
+      throw new Error(
+        'validation.minLength cannot be greater than validation.maxLength.',
+      );
     }
 
     if (validation.pattern !== undefined) {
@@ -111,8 +120,14 @@ export function validatePrimitiveValue(
   }
 
   if (field.primitiveType === 'number') {
-    if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) {
-      throw new Error(`Field "${field.fieldKey}" expects a finite numeric value.`);
+    if (
+      typeof value !== 'number' ||
+      Number.isNaN(value) ||
+      !Number.isFinite(value)
+    ) {
+      throw new Error(
+        `Field "${field.fieldKey}" expects a finite numeric value.`,
+      );
     }
 
     if (validation.integer && !Number.isInteger(value)) {
@@ -120,23 +135,35 @@ export function validatePrimitiveValue(
     }
 
     if (validation.min !== undefined && value < validation.min) {
-      throw new Error(`Field "${field.fieldKey}" must be >= ${validation.min}.`);
+      throw new Error(
+        `Field "${field.fieldKey}" must be >= ${validation.min}.`,
+      );
     }
 
     if (validation.max !== undefined && value > validation.max) {
-      throw new Error(`Field "${field.fieldKey}" must be <= ${validation.max}.`);
+      throw new Error(
+        `Field "${field.fieldKey}" must be <= ${validation.max}.`,
+      );
     }
 
     return value;
   }
 
   if (field.primitiveType === 'duration') {
-    if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) {
-      throw new Error(`Field "${field.fieldKey}" expects a finite duration value in seconds.`);
+    if (
+      typeof value !== 'number' ||
+      Number.isNaN(value) ||
+      !Number.isFinite(value)
+    ) {
+      throw new Error(
+        `Field "${field.fieldKey}" expects a finite duration value in seconds.`,
+      );
     }
 
     if (!Number.isInteger(value)) {
-      throw new Error(`Field "${field.fieldKey}" duration must be an integer number of seconds.`);
+      throw new Error(
+        `Field "${field.fieldKey}" duration must be an integer number of seconds.`,
+      );
     }
 
     if (value < 0) {
@@ -144,11 +171,15 @@ export function validatePrimitiveValue(
     }
 
     if (validation.min !== undefined && value < validation.min) {
-      throw new Error(`Field "${field.fieldKey}" must be >= ${validation.min}.`);
+      throw new Error(
+        `Field "${field.fieldKey}" must be >= ${validation.min}.`,
+      );
     }
 
     if (validation.max !== undefined && value > validation.max) {
-      throw new Error(`Field "${field.fieldKey}" must be <= ${validation.max}.`);
+      throw new Error(
+        `Field "${field.fieldKey}" must be <= ${validation.max}.`,
+      );
     }
 
     return value;
@@ -158,16 +189,31 @@ export function validatePrimitiveValue(
     throw new Error(`Field "${field.fieldKey}" expects a string value.`);
   }
 
-  if (validation.minLength !== undefined && value.length < validation.minLength) {
-    throw new Error(`Field "${field.fieldKey}" length must be >= ${validation.minLength}.`);
+  if (
+    validation.minLength !== undefined &&
+    value.length < validation.minLength
+  ) {
+    throw new Error(
+      `Field "${field.fieldKey}" length must be >= ${validation.minLength}.`,
+    );
   }
 
-  if (validation.maxLength !== undefined && value.length > validation.maxLength) {
-    throw new Error(`Field "${field.fieldKey}" length must be <= ${validation.maxLength}.`);
+  if (
+    validation.maxLength !== undefined &&
+    value.length > validation.maxLength
+  ) {
+    throw new Error(
+      `Field "${field.fieldKey}" length must be <= ${validation.maxLength}.`,
+    );
   }
 
-  if (validation.pattern !== undefined && !new RegExp(validation.pattern).test(value)) {
-    throw new Error(`Field "${field.fieldKey}" does not match required pattern.`);
+  if (
+    validation.pattern !== undefined &&
+    !new RegExp(validation.pattern).test(value)
+  ) {
+    throw new Error(
+      `Field "${field.fieldKey}" does not match required pattern.`,
+    );
   }
 
   return value;
@@ -215,7 +261,9 @@ export function validateEntryValueColumns(
     text: 'value_text',
   };
   const allowedKey = keysByPrimitive[field.primitiveType];
-  const hasValueInAnyColumn = Object.values(columns).some((value) => value !== null);
+  const hasValueInAnyColumn = Object.values(columns).some(
+    (value) => value !== null,
+  );
 
   for (const key of Object.keys(columns) as Array<keyof EntryValueColumns>) {
     if (key !== allowedKey && hasOwn(columns, key) && columns[key] !== null) {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
+import request, { type Response } from 'supertest';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
@@ -18,15 +18,18 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpAdapter().getInstance())
+    const server = app.getHttpAdapter().getInstance() as Parameters<
+      typeof request
+    >[0];
+
+    return request(server)
       .get('/')
       .expect(200)
-      .expect(({ body }) => {
-        expect(body).toEqual({
-          status: 'ok',
-          service: 'habitor-api',
-          timestamp: expect.any(String),
-        });
+      .expect((response: Response) => {
+        const body = response.body as Record<string, unknown>;
+        expect(body.status).toBe('ok');
+        expect(body.service).toBe('habitor-api');
+        expect(typeof body.timestamp).toBe('string');
       });
   });
 });

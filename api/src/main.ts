@@ -26,7 +26,10 @@ bootstrap().catch((error: unknown) => {
 });
 
 function loadEnvironment() {
-  const envCandidates = [resolve(process.cwd(), '.env'), resolve(process.cwd(), '..', '.env')];
+  const envCandidates = [
+    resolve(process.cwd(), '.env'),
+    resolve(process.cwd(), '..', '.env'),
+  ];
 
   for (const path of envCandidates) {
     if (existsSync(path)) {
