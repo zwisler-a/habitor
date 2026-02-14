@@ -1,4 +1,5 @@
 import {
+  calculateNextDueAt,
   isDayScheduled,
   normalizeSchedule,
   type ScheduleConfig,
@@ -155,6 +156,49 @@ describe('schedule.model', () => {
 
       expect(isDayScheduled(config, 'sun')).toBe(true);
       expect(isDayScheduled(config, 'mon')).toBe(false);
+    });
+  });
+
+  describe('calculateNextDueAt', () => {
+    it('returns next remaining time for daily schedules on same day', () => {
+      const config: ScheduleConfig = {
+        kind: 'daily',
+        times: ['08:00', '21:00'],
+      };
+
+      const next = calculateNextDueAt(config, new Date('2026-02-14T09:30:00Z'));
+      expect(next.toISOString()).toBe('2026-02-14T21:00:00.000Z');
+    });
+
+    it('rolls to next day when all times have passed', () => {
+      const config: ScheduleConfig = {
+        kind: 'daily',
+        times: ['08:00'],
+      };
+
+      const next = calculateNextDueAt(config, new Date('2026-02-14T22:30:00Z'));
+      expect(next.toISOString()).toBe('2026-02-15T08:00:00.000Z');
+    });
+
+    it('skips weekend days for weekday schedules', () => {
+      const config: ScheduleConfig = {
+        kind: 'weekdays',
+        times: ['07:15'],
+      };
+
+      const next = calculateNextDueAt(config, new Date('2026-02-14T10:00:00Z'));
+      expect(next.toISOString()).toBe('2026-02-16T07:15:00.000Z');
+    });
+
+    it('uses only configured custom days', () => {
+      const config: ScheduleConfig = {
+        kind: 'custom',
+        times: ['06:00'],
+        days: ['sun', 'wed'],
+      };
+
+      const next = calculateNextDueAt(config, new Date('2026-02-16T12:00:00Z'));
+      expect(next.toISOString()).toBe('2026-02-18T06:00:00.000Z');
     });
   });
 });

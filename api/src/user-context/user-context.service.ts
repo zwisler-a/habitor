@@ -2,10 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { UserEntity } from '../database/entities/user.entity';
-
-const DEFAULT_USER_ID = 'local-default-user';
-const DEFAULT_USER_NAME = 'Local User';
-const MAX_USER_ID_LENGTH = 128;
+import {
+  DEFAULT_USER_ID,
+  DEFAULT_USER_NAME,
+  MAX_USER_ID_LENGTH,
+} from './user-context.constants';
 
 @Injectable()
 export class UserContextService {

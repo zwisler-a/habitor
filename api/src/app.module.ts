@@ -4,11 +4,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppConfigModule } from './config/app-config.module';
 import { DatabaseModule } from './database/database.module';
+import { TrackersModule } from './modules/trackers/trackers.module';
 import { UserContextGuard } from './user-context/user-context.guard';
 import { UserContextModule } from './user-context/user-context.module';
 
 @Module({
-  imports: [AppConfigModule, DatabaseModule, UserContextModule],
+  imports: [AppConfigModule, DatabaseModule, UserContextModule, TrackersModule],
   controllers: [AppController],
   providers: [
     AppService,

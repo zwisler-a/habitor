@@ -19,6 +19,16 @@ export interface ScheduleConfig {
   days?: Weekday[];
 }
 
+const dayIndexToWeekday: Weekday[] = [
+  'sun',
+  'mon',
+  'tue',
+  'wed',
+  'thu',
+  'fri',
+  'sat',
+];
+
 function parseDay(rawDay: string): Weekday {
   const normalized = rawDay.toLowerCase();
 
@@ -103,4 +113,45 @@ export function isDayScheduled(config: ScheduleConfig, day: Weekday): boolean {
   }
 
   return (normalized.days ?? []).includes(day);
+}
+
+export function calculateNextDueAt(config: ScheduleConfig, from: Date): Date {
+  const normalized = normalizeSchedule(config);
+  const fromTime = from.getTime();
+
+  for (let dayOffset = 0; dayOffset < 14; dayOffset += 1) {
+    const day = new Date(
+      Date.UTC(
+        from.getUTCFullYear(),
+        from.getUTCMonth(),
+        from.getUTCDate() + dayOffset,
+      ),
+    );
+    const weekday = dayIndexToWeekday[day.getUTCDay()];
+
+    if (!isDayScheduled(normalized, weekday)) {
+      continue;
+    }
+
+    for (const time of normalized.times) {
+      const [hours, minutes] = time.split(':').map((part) => Number(part));
+      const candidate = new Date(
+        Date.UTC(
+          day.getUTCFullYear(),
+          day.getUTCMonth(),
+          day.getUTCDate(),
+          hours,
+          minutes,
+          0,
+          0,
+        ),
+      );
+
+      if (candidate.getTime() >= fromTime) {
+        return candidate;
+      }
+    }
+  }
+
+  throw new Error('Unable to calculate next due time from schedule.');
 }
