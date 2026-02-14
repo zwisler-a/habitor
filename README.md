@@ -20,6 +20,7 @@ This repository uses npm workspaces with:
 - `npm run db:migrate --workspace api` to run SQLite migrations
 - `npm run db:revert --workspace api` to revert the latest SQLite migration
 - `npm run db:seed --workspace api` to apply starter core seed data
+- `docker compose up --build` to run API + scheduler + Angular static assets in one container
 
 ### Environment
 
@@ -28,3 +29,10 @@ API startup now validates required env vars and exits with explicit errors when 
 - `SQLITE_PATH` is required
 - `PORT` must be `1-65535`
 - `NODE_ENV` must be `development`, `test`, or `production`
+
+### Docker (HAB-002)
+
+- Run `docker compose up --build`
+- API health is available at `http://localhost:3000/`
+- Angular static assets are served by NestJS at `http://localhost:3000/app/`
+- SQLite persists across restarts in the mounted host path `./data` (container path `/app/data`)
