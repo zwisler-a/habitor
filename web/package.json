@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@habitor/web",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -20,6 +20,7 @@
   },
   "private": true,
   "dependencies": {
+    "@habitor/shared-types": "0.1.0",
     "@angular/common": "^20.1.0",
     "@angular/compiler": "^20.1.0",
     "@angular/core": "^20.1.0",

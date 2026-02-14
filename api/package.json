@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@habitor/api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -12,6 +12,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "db:migrate": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts",
+    "db:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/data-source.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -20,11 +22,16 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@habitor/shared-types": "0.1.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/typeorm": "^11.0.0",
+    "dotenv": "^17.2.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

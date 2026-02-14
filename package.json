@@ -1,0 +1,21 @@
+{
+  "name": "habitor",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0"
+  },
+  "workspaces": [
+    "web",
+    "api",
+    "packages/shared-types"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api,types -c green,blue,magenta \"npm run start --workspace web\" \"npm run start:dev --workspace api\" \"npm run watch --workspace @habitor/shared-types\"",
+    "build": "npm run build --workspace @habitor/shared-types && npm run build --workspace api && npm run build --workspace web",
+    "typecheck": "npm run build --workspace @habitor/shared-types"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
